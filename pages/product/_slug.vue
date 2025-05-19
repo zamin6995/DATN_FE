@@ -214,7 +214,7 @@
   </div>
 </template>
 <script>
-import { StatusFavotes } from "~/helpers/Constant";
+import { STATUS_FAVORITES } from "~/helpers/Constant";
 export default {
   layout: "page-detail",
   async asyncData({ $axios, params }) {
@@ -243,7 +243,7 @@ export default {
       this.product.favorites &&
       this.product.favorites[0] &&
       this.product.favorites[0].product_id === this.product.id &&
-      this.product.favorites[0].status === StatusFavotes.ACTIVE
+      this.product.favorites[0].status === STATUS_FAVORITES.ACTIVE
     )
       this.isActive = true;
   },

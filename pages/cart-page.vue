@@ -21,7 +21,8 @@
                   <tr v-for="item in detailCarts" :key="item.id">
                     <td class="product-thumbnail">
                       <a :href="`product/${item.product.slug}`">
-                        <img :src="`${item.product?.images[0]?.link}`" alt=""/> </a>
+                        <img :src="`${item.product?.images[0]?.link}`" alt="" />
+                      </a>
                     </td>
                     <td class="product-name">
                       <a :href="`product/${item.product.slug}`">{{
@@ -182,7 +183,12 @@
                   placeholder="Enter your coupon code"
                   name="name"
                 />
-                <p class="mt-2" v-if="!couponCode"><i>Get coupon from coupon list</i>: <NuxtLink to="/coupon" class="font-weight-bold"> HERE</NuxtLink></p>
+                <p class="mt-2" v-if="!couponCode">
+                  <i>Get coupon from coupon list</i>:
+                  <NuxtLink to="/coupon" class="font-weight-bold">
+                    HERE</NuxtLink
+                  >
+                </p>
                 <button class="cart-btn-2" @click="checkCoupon">
                   Apply Coupon
                 </button>
@@ -218,7 +224,7 @@
       @cancel="closeModal"
     />
     <!-- Loader -->
-    <Loader :isLoading="isLoading"/>
+    <Loader :isLoading="isLoading" />
     <!-- End Loader -->
   </div>
 </template>
@@ -280,6 +286,7 @@ export default {
 
   mounted() {
     this.isLoading = false;
+    this.handlePaymentRedirect();
   },
 
   computed: {
@@ -532,6 +539,29 @@ export default {
       this.openConfirmationModal();
     },
 
+    notifySuccessOrder() {
+      this.closeModal();
+      this.$store.dispatch("setBillData", data);
+      this.$router.push("notify-order");
+
+      // Store info order with vuex
+      this.$toast.success(
+        "Thêm thông tin giao hàng thành công, hãy chuyển đến bước thanh toán!"
+      );
+    },
+
+    handlePaymentRedirect() {
+      const query = new URLSearchParams(window.location.search);
+      const status = query.get("status");
+      const cancel = query.get("cancel");
+
+      if (status === "PAID" && cancel !== "true") {
+        this.notifySuccessOrder();
+      } else if (cancel === "true" || status === "CANCELLED") {
+        this.$toast.error("Thanh toán bị huỷ hoặc không thành công.");
+      }
+    },
+
     async submitOrder() {
       try {
         const now = new Date();
@@ -554,14 +584,57 @@ export default {
           }
         );
         this.isLoading = false;
+
         let data = resSubmit?.data?.data;
-        this.closeModal();
-        this.$store.dispatch("setBillData", data);
-        this.$router.push("notify-order");
-        // Store info order with vuex
-        this.$toast.success(
-          "Thêm thông tin giao hàng thành công, hãy chuyển đến bước thanh toán!"
-        );
+
+        // Handle checkout by what case?
+        if (this.paymentMethod == 0) {
+          notifySuccessOrder();
+        } else if (this.paymentMethod == 1) {
+          const listItem = this.detailCarts.map((item) => {
+            return {
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.price_sale * 24500,
+            };
+          });
+
+          const dataSubmit = {
+            orderCode: data?.order?.code,
+            amount: data?.order?.total_mount,
+            description: "THANH TOAN CHUYEN KHOAN",
+            buyerName: data?.user?.last_name,
+            buyerEmail: data?.user?.email,
+            buyerPhone: data?.user?.phone,
+            buyerAddress: data?.order?.address_delivery,
+            items: listItem,
+            cancelUrl: "http://localhost:3000/cart-page",
+            returnUrl: "http://localhost:3000/cart-page",
+            expiredAt: Math.floor((Date.now() + 10 * 60 * 1000) / 1000),
+          };
+
+          const resSubmit = await this.$axios.post(
+            `/payos/create-payment`,
+            dataSubmit,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          this.isLoading = true;
+          const responseData = resSubmit?.data?.data;
+
+          if (responseData?.checkoutUrl) {
+            window.location.href = responseData.checkoutUrl;
+          } else {
+            this.isLoading = false;
+            this.$toast.error(
+              "Có lỗi xảy ra khi thanh toán, vui lòng thử lại sau!"
+            );
+          }
+        }
       } catch (error) {
         this.isLoading = false;
         console.error(error);

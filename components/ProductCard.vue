@@ -144,7 +144,7 @@
 </template>
 <script>
 import character from "~/mixins/character";
-import { StatusFavotes } from "~/helpers/Constant";
+import { STATUS_FAVORITES } from "~/helpers/Constant";
 export default {
   mixins: [character],
   props: {
@@ -174,7 +174,7 @@ export default {
       this.product.favorites &&
       this.product.favorites[0] &&
       this.product.favorites[0].product_id === this.product.id &&
-      this.product.favorites[0].status === StatusFavotes.ACTIVE
+      this.product.favorites[0].status === STATUS_FAVORITES.ACTIVE
     ) {
       this.isActive = true;
     }
