@@ -33,6 +33,9 @@
                     <li>
                       <NuxtLink to="/contact">contact</NuxtLink>
                     </li>
+                    <li>
+                      <NuxtLink to="/chat-ai">Chat With AI</NuxtLink>
+                    </li>
                     <li class="top-hover">
                       <a class="option-account">account</a>
                       <ul class="submenu">
