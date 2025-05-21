@@ -286,6 +286,16 @@ export default {
 
   mounted() {
     this.isLoading = false;
+    const savedOrder = this.$localStorage.getItem("lastOrderData");
+
+    if (savedOrder) {
+      try {
+        this.lastOrderData = JSON.parse(savedOrder);
+      } catch (e) {
+        this.lastOrderData = null;
+      }
+    }
+
     this.handlePaymentRedirect();
   },
 
@@ -539,15 +549,11 @@ export default {
       this.openConfirmationModal();
     },
 
-    notifySuccessOrder() {
+    notifySuccessOrder(notifyContent) {
       this.closeModal();
-      this.$store.dispatch("setBillData", data);
+      this.$store.dispatch("setBillData", this.lastOrderData);
+      this.$toast.success(notifyContent);
       this.$router.push("notify-order");
-
-      // Store info order with vuex
-      this.$toast.success(
-        "Thêm thông tin giao hàng thành công, hãy chuyển đến bước thanh toán!"
-      );
     },
 
     handlePaymentRedirect() {
@@ -556,9 +562,13 @@ export default {
       const cancel = query.get("cancel");
 
       if (status === "PAID" && cancel !== "true") {
-        this.notifySuccessOrder();
+        this.notifySuccessOrder(
+          "Chúc mừng bạn đã thanh toán bằng QR thành công, hãy kiểm tra email để xem chi tiết đơn hàng!"
+        );
       } else if (cancel === "true" || status === "CANCELLED") {
-        this.$toast.error("Thanh toán bị huỷ hoặc không thành công.");
+        this.notifySuccessOrder(
+          "Bạn đã huỷ thanh toán bằng QR thành công, hãy kiểm tra email để xem chi tiết đơn hàng và thanh toán khi nhận hàng!"
+        );
       }
     },
 
@@ -586,10 +596,13 @@ export default {
         this.isLoading = false;
 
         let data = resSubmit?.data?.data;
+        this.$localStorage.setItem("lastOrderData", data);
 
         // Handle checkout by what case?
         if (this.paymentMethod == 0) {
-          notifySuccessOrder();
+          this.notifySuccessOrder(
+            "Đặt đơn hàng thành công, vui lòng kiểm tra chi tiết đơn hàng trong email và thanh toán khi nhận được hàng!"
+          );
         } else if (this.paymentMethod == 1) {
           const listItem = this.detailCarts.map((item) => {
             return {
