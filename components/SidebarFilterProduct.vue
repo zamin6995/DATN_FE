@@ -144,8 +144,8 @@ export default {
       allTags: [],
       isDataLoaded: false,
       isLoadingSpinner: true,
-      maxPrice: 3000,
-      priceValueCurrent: [0, 3000],
+      maxPrice: 300,
+      priceValueCurrent: [0, 300],
       selectedBrands: [],
       selectedColors: [],
       activeTagId: null,
@@ -180,8 +180,8 @@ export default {
           ]);
         this.$bus.$emit("isLoading3Dot", false);
 
-        let maxPrice = 3000;
-        if (resMMPrice.data?.data?.max_price > 3000) {
+        let maxPrice = 300;
+        if (resMMPrice.data?.data?.max_price > 300) {
           maxPrice = resMMPrice.data?.data?.max_price;
         }
 

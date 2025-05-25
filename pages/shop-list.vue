@@ -317,13 +317,7 @@ export default {
         );
         if (parentCatId.length > 0) {
           filteredProducts = filteredProducts.filter((product) => {
-            return this.allCategories.some(
-              (category) =>
-                category.id === product.category_id ||
-                category.children.some(
-                  (item) => item.id === product.category_id
-                )
-            );
+            return this.selectedCategory === product.category_id
           });
         } else {
           filteredProducts = filteredProducts.filter(
@@ -394,7 +388,7 @@ export default {
       if (
         this.listProductCompare.length < this.qtyProductCompareLimit ||
         this.$localStorage.getItem("listProductCompare").length ===
-          this.qtyProductCompareLimit
+        this.qtyProductCompareLimit
       )
         this.statusProductCompareLimit = false;
     },
@@ -505,6 +499,9 @@ export default {
       const options = [];
       if (end != 0) {
         for (let i = start; i <= end; i += step) {
+          if (i + step > end) {
+            this.pageSize = i;
+          }
           options.push(i);
         }
       }

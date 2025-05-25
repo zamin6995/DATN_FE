@@ -70,7 +70,7 @@
                     class="cart-plus-minus-box"
                     type="number"
                     name="qtybutton"
-                    :min="numberOrder"
+                    :min="1"
                     :max="qtyRemain(product?.qty_import, product?.qty_sold)"
                     @change="setMaxQty(product?.qty_import, product?.qty_sold)"
                     v-model="numberOrder"
@@ -444,6 +444,18 @@ export default {
 .product-dec-slider .slick-slide img,
 .product-details-img img {
   width: 100%;
+
+}
+
+.product-details-img > img {
+  max-width: 100%;
+  width: 450px;
+  height: 450px;
+}
+
+.product-dec-slider .slick-slide img {
+  width: 103px;
+  height: 103px;
 }
 
 .action-wishlist:hover,

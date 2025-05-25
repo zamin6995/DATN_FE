@@ -58,29 +58,6 @@ export default {
     '@nuxtjs/auth-next'
   ],
 
-  // auth: {
-  //   strategies: {
-  //     local: {
-  //       endpoints: {
-  //         login: {
-  //           url: '/auth/login',
-  //           method: 'post',
-  //           propertyName: 'data.jwt_token'
-  //         },
-  //         tokenRequired: false,
-  //         logout: false,
-  //         // user: false,
-  //       }
-  //     },
-  //   },
-  //   redirect: {
-  //     login: '/login',
-  //     logout: '/',
-  //     callback: '/login',
-  //     home: '/'
-  //   },
-  // },
-
   auth: {
     strategies: {
       local: {
@@ -115,7 +92,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'http://truongnx_2023_03_07_backend.test/api',
+    baseURL: 'http://backend.test/api',
   },
 
   router: {
