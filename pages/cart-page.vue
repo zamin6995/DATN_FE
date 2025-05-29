@@ -565,10 +565,6 @@ export default {
         this.notifySuccessOrder(
           "Chúc mừng bạn đã thanh toán bằng QR thành công, hãy kiểm tra email để xem chi tiết đơn hàng!"
         );
-      } else if (cancel === "true" || status === "CANCELLED") {
-        this.notifySuccessOrder(
-          "Bạn đã huỷ thanh toán bằng QR thành công, hãy kiểm tra email để xem chi tiết đơn hàng và thanh toán khi nhận hàng!"
-        );
         const orderIdUpdate = this.lastOrderData?.order?.id ?? null;
         if (orderIdUpdate) {
           this.isLoading = true;
@@ -589,7 +585,10 @@ export default {
 
           this.isLoading = false;
         }
-        console.log("TEST resSubmit: ", resSubmit);
+      } else if (cancel === "true" || status === "CANCELLED") {
+        this.notifySuccessOrder(
+          "Bạn đã huỷ thanh toán bằng QR thành công, hãy kiểm tra email để xem chi tiết đơn hàng và thanh toán khi nhận hàng!"
+        );
       }
     },
 
