@@ -556,7 +556,7 @@ export default {
       this.$router.push("notify-order");
     },
 
-    handlePaymentRedirect() {
+    async handlePaymentRedirect() {
       const query = new URLSearchParams(window.location.search);
       const status = query.get("status");
       const cancel = query.get("cancel");
@@ -569,6 +569,27 @@ export default {
         this.notifySuccessOrder(
           "Bạn đã huỷ thanh toán bằng QR thành công, hãy kiểm tra email để xem chi tiết đơn hàng và thanh toán khi nhận hàng!"
         );
+        const orderIdUpdate = this.lastOrderData?.order?.id ?? null;
+        if (orderIdUpdate) {
+          this.isLoading = true;
+
+          const payloadUpdateStatus = {
+            order_id: orderIdUpdate,
+          };
+
+          await this.$axios.post(
+            `/order/update-status`,
+            payloadUpdateStatus,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          this.isLoading = false;
+        }
+        console.log("TEST resSubmit: ", resSubmit);
       }
     },
 
