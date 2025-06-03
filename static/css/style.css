@@ -1351,7 +1351,7 @@ textarea:focus {
   background: transparent;
 }
 .theme-color {
-  color: #519f10;
+  color: #519f10!important;
 }
 /*Opacity background*/
 /* black overlay */
@@ -2006,9 +2006,10 @@ textarea:focus {
   animation-duration: 1.3s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+  color: white;
 }
-.owl-item.active .slider-content * {
-}
+/* .owl-item.active .slider-content * {
+} */
 .owl-item.active .slider-animated-1 h3 {
   -webkit-animation-delay: 0.7s;
   animation-delay: 0.7s;
